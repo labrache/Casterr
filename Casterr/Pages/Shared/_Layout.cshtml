@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Casterr</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/open-iconic/font/css/open-iconic-bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">Casterr</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/movies/Movies">Movies</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/tvshow/Index">TV Show</a>
+                        </li>
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            <a class="link-dark" data-bs-toggle="offcanvas" href="#offcanvasCast" role="button" aria-controls="offcanvasCast">
+                Cast panel
+            </a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/mustache.js/mustache.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasCast" aria-labelledby="offcanvasCastLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasCastLabel">Cast</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                @await RenderSectionAsync("cast", required: false)
+            </div>
+            <div id="renderers">
+
+            </div>
+        </div>
+    </div>
+    <script id="renderer_tmpl" type="x-tmpl-mustache">
+    <div class="card" id="{{id}}">
+      <h5 class="card-header">{{name}} - {{type}}</h5>
+      <div class="card-body">
+        <h5 class="card-title cast-title">Null</h5>
+        <h6 class="card-subtitle mb-2 text-muted cast-sub">Null</h6>
+        <input type="range" class="form-range cast-pos" min="0" max="1" step="0.01" value="0">
+        <p class="card-text"></p>
+        <div class="btn-group" role="group" aria-label="Basic outlined example">
+          <button type="button" class="btn btn-outline-primary cast-backward"><span class="oi oi-media-skip-backward"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-play"><span class="oi oi-media-play"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-pause"><span class="oi oi-media-pause"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-stop"><span class="oi oi-media-stop"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-forward"><span class="oi oi-media-skip-forward"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-mute"><span class="oi oi-volume-off"></span></button>
+          <button type="button" class="btn btn-outline-primary cast-unmute"><span class="oi oi-volume-high"></span></button>
+        </div>
+        <input type="range" class="form-range cast-vol" min="0" max="1" step="0.01" value="1">
+        <div class="tracks row"></div>
+      </div>
+      <div class="card-footer text-muted cast-btn">
+        <div class="d-grid gap-2">
+        <button type="button" onclick="StartCasting(this);" data-id="{{id}}" class="btn btn-outline-success"><span class="oi oi-media-play"></span> Caster sur cet appareil</button>
+        </div>
+      </div>
+    </div>
+    </script>
+    <script id="renderer_tracks_tmpl" type="x-tmpl-mustache">
+        <div class="col">
+             <span class="oi oi-audio"></span> Piste audio
+            <select class="form-select form-select-sm audioTrackSelector" name="audio" onchange="setAudio(this)">
+                {{#audio}}
+                <option value="{{index}}">{{language}} - {{description}}</option>
+                {{/audio}}
+            </select>
+        </div>
+        <div class="col">
+            <span class="oi oi-text"></span> Sous-titres
+        <select class="form-select form-select-sm subTrackSelector" name="sub" onchange="setSub(this)">
+            <option value="-1">Désactivés</option>
+                {{#sub}}
+                    <option value="{{index}}">{{language}} - {{description}}</option>
+                {{/sub}}
+            </select>
+        </div>
+    </script>
+</body>
+</html>

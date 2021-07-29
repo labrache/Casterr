@@ -1,0 +1,17 @@
+﻿@page
+@model Casterr.Areas.Admin.Pages.Manage.Connections.tmdbModel
+@{
+    ViewData["Title"] = "TMDB";
+}
+<h1>TMDB configuration</h1>
+<form method="post">
+    <div class="mb-3">
+        <label for="lang" class="form-label">Lang</label>
+        <input type="text" class="form-control" id="lang" name="lang" value="@Model.lang">
+    </div>
+    <div class="mb-3">
+        <label for="key" class="form-label">Api Key</label>
+        <input type="text" class="form-control" id="key" name="key" value="@Model.Key">
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

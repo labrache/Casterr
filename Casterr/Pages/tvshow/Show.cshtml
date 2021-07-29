@@ -1,0 +1,62 @@
+﻿@page
+@model Casterr.Pages.tvshow.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Tvshow.Title;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="./Index">Series</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Html.DisplayFor(model => model.Tvshow.Title)</li>
+    </ol>
+</nav>
+<div class="card bg-dark text-white">
+    @if (Model.Tvshow.posterFile != null)
+    {
+        <img src="/data/shows/@Model.Tvshow.thumbStorage/@Model.Tvshow.tmdbBackdropFile" class="img-fluid rounded-start" alt="Back image">
+    }
+    else
+    {
+        <img src="~/images/backposter.jpg" class="img-fluid rounded-start" alt="Empty poster">
+    }
+    <div class="card-img-overlay" style="overflow: auto;">
+        <p class="card-text t-shadow">@Html.DisplayFor(model => model.Tvshow.Plot)</p>
+        <p class="card-text t-shadow">
+            @Html.DisplayFor(model => model.Tvshow.genre)
+        </p>
+        <p class="card-text t-shadow">
+            <a asp-page="./Episodes" asp-route-id="@Model.Tvshow.id" class="btn btn-link link-light"><span class="oi oi-media-play"></span> All episodes</a>
+        </p>
+        <div class="row row-cols-1 row-cols-md-6 g-4">
+
+        </div>
+    </div>
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4 mt-3">
+    @foreach (Casterr.Data.Seasons season in Model.Tvshow.seasons)
+    {
+    <div class="col">
+        <div class="card mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    @if (!String.IsNullOrEmpty(season.poster))
+                    {
+                        <img class="img-fluid rounded-start" src="/data/shows/@Model.Tvshow.thumbStorage/@season.poster" alt="Season poster">
+                    }
+                    else
+                    {
+                        <img class="img-fluid rounded-start" src="~/images/blank_episode.jpg" alt="Empty poster">
+                    }
+
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title"><a asp-page="./Episodes" asp-route-id="@Model.Tvshow.id" asp-route-season="@season.seasonNumber" class="stretched-link">@season.name</a></h5>
+                        <p class="card-text"><small class="text-muted">@season.episodeFileCount Episodes</small></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

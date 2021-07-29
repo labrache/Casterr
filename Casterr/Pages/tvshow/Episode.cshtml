@@ -1,0 +1,85 @@
+﻿@page
+@model Casterr.Pages.tvshow.EpisodeModel
+
+@{
+    ViewData["Title"] = String.Format("S{0:00}E{1:00} - {2}", Model.Episode.season, Model.Episode.episode, Model.Episode.Title);
+}
+
+@section cast
+        {
+    <script>
+        function StartCasting(elem) {
+            siteHub.invoke("StartPlaying", $(elem).data("id"), 'episode' , '@Model.Episode.id').catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    </script>
+    <style>
+        .cast-btn {
+            display: inline !important;
+        }
+    </style>
+}
+<div class="d-flex justify-content-between">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-page="./Index">Series</a></li>
+            <li class="breadcrumb-item"><a asp-page="./Show" asp-route-id="@Model.Episode.show.id">@Model.Episode.show.Title</a></li>
+            <li class="breadcrumb-item active" aria-current="page">@ViewData["Title"]</li>
+        </ol>
+    </nav>
+    <ul class="pagination">
+    @if (@Model.PrevEpisode != null)
+    {
+        <li class="page-item">
+            <a asp-page="./Episode" asp-route-id="@Model.PrevEpisode.id" class="page-link">
+                <span class="oi oi-chevron-left"></span> @String.Format("S{0:00}E{1:00}", @Model.PrevEpisode.season, @Model.PrevEpisode.episode) @Model.PrevEpisode.Title
+            </a>
+        </li>
+    }
+    else
+    {
+        <li class="page-item disabled">
+            <a href="#" class="page-link">
+                <span class="oi oi-chevron-left"></span> Premier episode
+            </a>
+        </li>
+    }
+    @if (@Model.NextEpisode != null)
+    {
+        <li class="page-item">
+            <a asp-page="./Episode" asp-route-id="@Model.NextEpisode.id" class="page-link">
+                @String.Format("S{0:00}E{1:00}", @Model.NextEpisode.season, @Model.NextEpisode.episode) @Model.NextEpisode.Title <span class="oi oi-chevron-right"></span>
+            </a>
+        </li>
+    }
+    else
+    {
+        <li class="page-item disabled">
+            <a href="#" class="page-link">
+                Dernier episode <span class="oi oi-chevron-right"></span>
+            </a>
+        </li>
+    }
+    </ul>
+</div>
+
+
+<div class="card bg-dark text-white">
+    <img src="/data/shows/@Model.Episode.show.thumbStorage/@Model.Episode.show.tmdbBackdropFile" class="img-fluid rounded-start" alt="Show back">
+    <div class="card-img-overlay" style="overflow: auto;">
+        <div class="row">
+            <div class="col-3 text-center">
+                <img class="img-fluid img-thumbnail" src="/data/shows/@Model.Episode.show.thumbStorage/@Model.Episode.thumbFileName" alt="Episode poster">
+                <p>@Model.releaseInfo.quality.quality.name - @Model.episodeSize</p>
+                <a class="btn btn-outline-light" href="/get/episode/@Model.Episode.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
+            </div>
+            <div class="col-9">
+                <h1>@ViewData["Title"]</h1>
+                <p class="card-text t-shadow">@Html.DisplayFor(model => model.Episode.Plot)</p>
+                <p class="card-text t-shadow">Saison @Html.DisplayFor(model => model.Episode.season) Episode @Html.DisplayFor(model => model.Episode.episode)</p>
+                <p class="card-text t-shadow">Diffusion @Html.DisplayFor(model => model.Episode.premiered)</p>
+            </div>
+        </div>
+    </div>
+</div>

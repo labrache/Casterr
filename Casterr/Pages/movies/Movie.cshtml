@@ -1,0 +1,92 @@
+﻿@page
+@model Casterr.Pages.movies.DetailsModel
+
+@{
+    ViewData["Title"] = Model.Movie.Title;
+    TimeSpan t = TimeSpan.FromMinutes(Model.Movie.duration);
+    string duration = string.Format("{0:D2}h{1:D2}",t.Hours,t.Minutes);
+}
+
+@section cast
+        {
+    <script>
+        function StartCasting(elem) {
+            siteHub.invoke("StartPlaying", $(elem).data("id"), 'movie' , '@Model.Movie.id').catch(function (err) {
+                return console.error(err.toString());
+            });
+        }
+    </script>
+    <style>
+        .cast-btn {
+            display: inline !important;
+        }
+    </style>
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="./Movies">Films</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Html.DisplayFor(model => model.Movie.Title)</li>
+    </ol>
+</nav>
+<div class="card bg-dark text-white">
+    <img src="/data/movies/@Model.Movie.fanartFile" class="img-fluid rounded-start" alt="@Model.Movie.Title fanart">
+    <div class="card-img-overlay" style="overflow: auto;">
+
+        <div class="row">
+            <div class="col-3 text-center">
+                <img class="img-fluid img-thumbnail" src="/data/movies/@Model.Movie.posterFile" alt="@Model.Movie.Title poster">
+                <p class="card-text t-shadow">@duration</p>
+                <p>@Model.releaseInfo.quality.quality.name - @Model.movieSize</p>
+                <a class="btn btn-outline-light" href="/get/movie/@Model.Movie.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
+            </div>
+            <div class="col-9">
+                <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.Plot)</p>
+                <p class="card-text t-shadow">
+                    @Html.DisplayFor(model => model.Movie.genre)
+                </p>
+                <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.director) - @Html.DisplayFor(model => model.Movie.year)</p>
+                <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.originalTitle)</p>
+                @if (Model.MovieSet != null)
+                {
+                    <p class="card-text t-shadow">
+                        <a class="link-light" data-bs-toggle="offcanvas" href="#offcanvasMovieSet" role="button" aria-controls="offcanvasMovieSet">
+                            @Html.DisplayFor(model => model.Movie.movieSet)
+                        </a>
+                    </p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@if (Model.MovieSet != null)
+{
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasMovieSet" aria-labelledby="offcanvasMovieSetLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasMovieSetLabel">@Html.DisplayFor(model => model.Movie.movieSet)</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            @foreach (var movie in Model.MovieSet)
+            {
+                <div class="col">
+                    <div class="card mb-3">
+                        <div class="row g-0">
+                            <div class="col-md-4">
+                                <img src="/data/movies/@movie.posterFile" class="img-fluid rounded-start" alt="@Html.DisplayFor(modelItem => movie.Title) poster">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title"><a asp-page="./Movie" asp-route-id="@movie.id" class="stretched-link">@Html.DisplayFor(modelItem => movie.Title)</a></h5>
+                                    <p class="card-text">
+                                        @Html.DisplayFor(modelItem => movie.genre)
+                                    </p>
+                                    <p class="card-text"><small class="text-muted">@Html.DisplayFor(modelItem => movie.year)</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

@@ -1,0 +1,34 @@
+﻿@{
+    Layout = "/Pages/Shared/_Layout.cshtml";
+}
+<h1>Admin panel</h1>
+<div class="row">
+    <div class="col-3">
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-page="/Manage">Admin home</a>
+            </li>
+        </ul>
+        <h3>Connection</h3>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-page="/Manage/Connections/Radarr">Radarr</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-page="/Manage/Connections/Sonarr">Sonarr</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-page="/Manage/Connections/tmdb">TMDB</a>
+            </li>
+        </ul>
+        <h3>Server</h3>
+        <ul class="nav flex-column">
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-page="/Manage/Server/mail">Email configuration</a>
+            </li>
+        </ul>
+    </div>
+    <div class="col-9">
+        @RenderBody()
+    </div>
+</div>

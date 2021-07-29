@@ -1,0 +1,69 @@
+﻿@page
+@model Casterr.Pages.tvshow.EpisodesModel
+
+@{
+    if(Model.Season != null)
+        ViewData["Title"] = String.Format("{0} - {1}", Model.Season.name, Model.Tvshow.Title);
+    else
+        ViewData["Title"] = Model.Tvshow.Title;
+}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-page="./Index">Series</a></li>
+        <li class="breadcrumb-item"><a asp-page="./Show" asp-route-id="@Model.Tvshow.id">@Model.Tvshow.Title</a></li>
+        @if (Model.Season != null)
+        {
+            <li class="breadcrumb-item active" aria-current="page">@Model.Season.name</li>
+        }
+        else
+        {
+            <li class="breadcrumb-item active" aria-current="page">All episodes</li>
+        }
+    </ol>
+</nav>
+<div class="card bg-dark text-white mb-3">
+    @if (Model.Tvshow.bannerFile != null)
+    {
+        <img src="/data/shows/@Model.Tvshow.thumbStorage/@Model.Tvshow.bannerFile" class="img-fluid rounded-start" alt="Show banner">
+    }
+    else
+    {
+        <img src="~/images/empty_banner.jpg" class="img-fluid rounded-start" alt="Empty banner">
+    }
+    <div class="card-img-overlay" style="overflow: auto;">
+        @if (Model.Season != null)
+        {
+            <h2 class="t-shadow">@Model.Season.name</h2>
+            <p class="t-shadow">@Model.Season.Plot</p>
+        }
+        else
+        {
+            <h2 class="t-shadow">All episodes</h2>
+        }
+    </div>
+</div>
+@foreach (var item in Model.Episode)
+{
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                @if (item.thumbFileName != null)
+                {
+                    <img class="img-fluid rounded-start" src="/data/shows/@Model.Tvshow.thumbStorage/@item.thumbFileName" alt="Episode thumb">
+                }
+                else
+                {
+                    <img class="img-fluid rounded-start" src="~/images/blank_episode.jpg" alt="Empty episode thumb">
+                }
+
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title"><a asp-page="./Episode" asp-route-id="@item.id" class="stretched-link">@Html.DisplayFor(modelItem => item.Title)</a></h5>
+                    <p class="card-text">@Html.DisplayFor(modelItem => item.Plot)</p>
+                    <p class="card-text"><small class="text-muted">Season @Html.DisplayFor(modelItem => item.season) Episode @Html.DisplayFor(modelItem => item.episode) Premiered @item.premiered.ToString("dd/MM/yyyy")</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+}

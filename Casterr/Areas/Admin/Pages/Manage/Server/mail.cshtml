@@ -1,0 +1,40 @@
+﻿@page
+@model Casterr.Areas.Admin.Pages.Manage.Server.mailModel
+@{
+    ViewData["Title"] = "Email configuration";
+}
+<h1>Email configuration</h1>
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Host_Address" class="control-label"></label>
+        <input asp-for="emailConfig.Host_Address" class="form-control" />
+        <span asp-validation-for="emailConfig.Host_Address" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Host_Port" class="control-label"></label>
+        <input asp-for="emailConfig.Host_Port" class="form-control" />
+        <span asp-validation-for="emailConfig.Host_Port" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Host_Username" class="control-label"></label>
+        <input asp-for="emailConfig.Host_Username" class="form-control" />
+        <span asp-validation-for="emailConfig.Host_Username" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Host_Password" class="control-label"></label>
+        <input asp-for="emailConfig.Host_Password" class="form-control" />
+        <span asp-validation-for="emailConfig.Host_Password" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Sender_EMail" class="control-label"></label>
+        <input asp-for="emailConfig.Sender_EMail" class="form-control" />
+        <span asp-validation-for="emailConfig.Sender_EMail" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="emailConfig.Sender_Name" class="control-label"></label>
+        <input asp-for="emailConfig.Sender_Name" class="form-control" />
+        <span asp-validation-for="emailConfig.Sender_Name" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>

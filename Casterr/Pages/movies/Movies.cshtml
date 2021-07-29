@@ -1,0 +1,99 @@
+﻿@page
+@model Casterr.Pages.movies.IndexModel
+
+@{
+    ViewData["Title"] = "Movies";
+
+    var prevDisabled = !Model.Movies.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Movies.HasNextPage ? "disabled" : "";
+}
+
+<h1>Movies</h1>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a asp-page="Movies" class="nav-link">Liste complète</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tri
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a asp-page="Movies" asp-route-s="date_desc" class="dropdown-item">Les plus récents</a></li>
+                        <li><a asp-page="Movies" asp-route-s="publish_desc" class="dropdown-item">Publications récentes</a></li>
+                        <li><a asp-page="Movies" asp-route-s="date" class="dropdown-item">Les plus vieux</a></li>
+                        <li><a asp-page="Movies" asp-route-s="publish" class="dropdown-item">Les plus anciens publiés</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <form asp-action="Index" method="get" class="me-auto d-flex">
+                <input class="form-control me-2" type="search" name="q" value="@ViewData["q"]" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <ul class="pagination">
+                        <li class="page-item @prevDisabled">
+                            <a asp-route-s="@ViewData["s"]" asp-route-p="@(Model.Movies.PageIndex - 1)" asp-route-q="@ViewData["q"]" class="page-link">
+                                <span class="oi oi-chevron-left"></span> Previous
+                            </a>
+                        </li>
+                        <li class="page-item disabled">
+                            <span class="page-link">@Model.Movies.PageIndex / @Model.Movies.TotalPages</span>
+                        </li>
+                        <li class="page-item @nextDisabled">
+                            <a asp-route-s="@ViewData["s"]" asp-route-p="@(Model.Movies.PageIndex + 1)" asp-route-q="@ViewData["q"]" class="page-link">
+                                Next <span class="oi oi-chevron-right"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 mb-3">
+    @foreach (var item in Model.Movies)
+    {
+        <div class="col">
+            <div class="card">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="/data/movies/@item.posterFile" class="img-fluid rounded-start" alt="...">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title"><a asp-page="./Movie" asp-route-id="@item.id" class="stretched-link">@Html.DisplayFor(modelItem => item.Title)</a></h5>
+                            <p class="card-text">
+                                @Html.DisplayFor(modelItem => item.genre)
+                            </p>
+                            <p class="card-text"><small class="text-muted">@Html.DisplayFor(modelItem => item.year)</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<ul class="pagination justify-content-end">
+    <li class="page-item @prevDisabled">
+        <a asp-route-s="@ViewData["s"]" asp-route-p="@(Model.Movies.PageIndex - 1)" asp-route-q="@ViewData["q"]" class="page-link">
+            <span class="oi oi-chevron-left"></span> Previous
+        </a>
+    </li>
+    <li class="page-item disabled">
+        <span class="page-link">@Model.Movies.PageIndex / @Model.Movies.TotalPages</span>
+    </li>
+    <li class="page-item @nextDisabled">
+        <a asp-route-s="@ViewData["s"]" asp-route-p="@(Model.Movies.PageIndex + 1)" asp-route-q="@ViewData["q"]" class="page-link">
+            Next <span class="oi oi-chevron-right"></span>
+        </a>
+    </li>
+</ul>

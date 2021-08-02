@@ -13,10 +13,17 @@ namespace Casterr.Data.classes
     public class CasterrConfig
     {
         private string _configFile;
+        private string _mailTemplateFolder;
+        private string _mailTemplate;
+        private string _mailFooterUnsubscribeTemplate;
         public CasterrConfig_Struct config { get; }
         public CasterrConfig(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configFile = Path.Combine(env.ContentRootPath, "config", configuration["configFile"]);
+            
+            _mailTemplateFolder = Path.Combine(env.ContentRootPath, "Data", "mail");
+            _mailTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_emailLayout.html"));
+            _mailFooterUnsubscribeTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_footerUnsubscribe.html"));
             if (File.Exists(_configFile))
                 config = JsonSerializer.Deserialize<CasterrConfig_Struct>(File.ReadAllText(_configFile));
             else
@@ -53,6 +60,20 @@ namespace Casterr.Data.classes
         internal void save()
         {
             File.WriteAllText(_configFile, JsonSerializer.Serialize(config));
+        }
+        internal String getEmailLinkTemplate(String link, String message, String linkMessage)
+        {
+            String messageLinkTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "messagelink.html"));
+            return String.Format(_mailTemplate, String.Format(messageLinkTemplate,link,message, linkMessage),String.Empty);
+
+        }
+        internal String getMailTemplate(String name)
+        {
+            String filePath = Path.Combine(_mailTemplateFolder, String.Format("{0}.html", name));
+            if (File.Exists(filePath))
+                return String.Format(_mailTemplate, File.ReadAllText(filePath),String.Empty);
+            else
+                throw new Exception("Email template not found");
         }
     }
     public class CasterrConfig_Struct

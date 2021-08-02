@@ -66,19 +66,19 @@
 
 
 <div class="card bg-dark text-white">
-    <img src="/data/shows/@Model.Episode.show.thumbStorage/@Model.Episode.show.tmdbBackdropFile" class="img-fluid rounded-start" alt="Show back">
+    <img src="/data/shows/@Model.Episode.show.thumbStorage/@Model.Episode.show.tmdbBackdropFile" class="card-img img-responsive" alt="Show back">
     <div class="card-img-overlay" style="overflow: auto;">
         <div class="row">
             <div class="col-3 text-center">
                 <img class="img-fluid img-thumbnail" src="/data/shows/@Model.Episode.show.thumbStorage/@Model.Episode.thumbFileName" alt="Episode poster">
-                <p>@Model.releaseInfo.quality.quality.name - @Model.episodeSize</p>
-                <a class="btn btn-outline-light" href="/get/episode/@Model.Episode.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
+                <a class="btn btn-outline-light mt-2 t-shadow" href="/get/episode/@Model.Episode.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
             </div>
             <div class="col-9">
                 <h1>@ViewData["Title"]</h1>
                 <p class="card-text t-shadow">@Html.DisplayFor(model => model.Episode.Plot)</p>
                 <p class="card-text t-shadow">Saison @Html.DisplayFor(model => model.Episode.season) Episode @Html.DisplayFor(model => model.Episode.episode)</p>
                 <p class="card-text t-shadow">Diffusion @Html.DisplayFor(model => model.Episode.premiered)</p>
+                <p class="card-text t-shadow">@Model.releaseInfo.quality.quality.name - @Model.episodeSize</p>
             </div>
         </div>
     </div>

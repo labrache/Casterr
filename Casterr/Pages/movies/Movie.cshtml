@@ -29,15 +29,13 @@
     </ol>
 </nav>
 <div class="card bg-dark text-white">
-    <img src="/data/movies/@Model.Movie.fanartFile" class="img-fluid rounded-start" alt="@Model.Movie.Title fanart">
+    <img src="/data/movies/@Model.Movie.fanartFile" class="card-img img-responsive" alt="@Model.Movie.Title fanart">
     <div class="card-img-overlay" style="overflow: auto;">
 
         <div class="row">
             <div class="col-3 text-center">
                 <img class="img-fluid img-thumbnail" src="/data/movies/@Model.Movie.posterFile" alt="@Model.Movie.Title poster">
-                <p class="card-text t-shadow">@duration</p>
-                <p>@Model.releaseInfo.quality.quality.name - @Model.movieSize</p>
-                <a class="btn btn-outline-light" href="/get/movie/@Model.Movie.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
+                <a class="btn btn-outline-light mt-2 t-shadow" href="/get/movie/@Model.Movie.id"><span class="oi oi-data-transfer-download"></span> Telecharger</a>
             </div>
             <div class="col-9">
                 <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.Plot)</p>
@@ -45,7 +43,7 @@
                     @Html.DisplayFor(model => model.Movie.genre)
                 </p>
                 <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.director) - @Html.DisplayFor(model => model.Movie.year)</p>
-                <p class="card-text t-shadow">@Html.DisplayFor(model => model.Movie.originalTitle)</p>
+                <p class="card-text t-shadow">@Model.releaseInfo.quality.quality.name - @Model.movieSize - @duration</p>
                 @if (Model.MovieSet != null)
                 {
                     <p class="card-text t-shadow">

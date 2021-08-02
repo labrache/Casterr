@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Casterr.Data.classes;
 
 namespace Casterr.Areas.Identity.Pages.Account
 {
@@ -19,11 +20,13 @@ namespace Casterr.Areas.Identity.Pages.Account
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailSender _emailSender;
+        private readonly CasterrConfig _casterr;
 
-        public ForgotPasswordModel(UserManager<AppUser> userManager, IEmailSender emailSender)
+        public ForgotPasswordModel(UserManager<AppUser> userManager, IEmailSender emailSender, CasterrConfig casterr)
         {
             _userManager = userManager;
             _emailSender = emailSender;
+            _casterr = casterr;
         }
 
         [BindProperty]
@@ -56,11 +59,13 @@ namespace Casterr.Areas.Identity.Pages.Account
                     pageHandler: null,
                     values: new { area = "Identity", code },
                     protocol: Request.Scheme);
-
+                /*
                 await _emailSender.SendEmailAsync(
                     Input.Email,
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                */
+                await _emailSender.SendEmailAsync(Input.Email, "Reset Password", _casterr.getEmailLinkTemplate(HtmlEncoder.Default.Encode(callbackUrl), "Please reset your password","Reset my password"));
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }

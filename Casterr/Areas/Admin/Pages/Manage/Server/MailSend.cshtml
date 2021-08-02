@@ -1,0 +1,15 @@
+﻿@page
+@model Casterr.Areas.Admin.Pages.Manage.Server.MailSendModel
+@{
+    ViewData["Title"] = "Email test";
+}
+<h1>@ViewData["Title"]</h1>
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="testMail" class="control-label"></label>
+        <input asp-for="testMail" class="form-control" />
+        <span asp-validation-for="testMail" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Send</button>
+</form>

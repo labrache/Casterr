@@ -22,23 +22,23 @@ namespace Casterr.Areas.Identity.Pages.Account
             _sender = sender;
         }
 
-        public string Email { get; set; }
+        public string Username { get; set; }
         public string EmailConfirmationUrl { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string email, string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string username, string returnUrl = null)
         {
-            if (email == null)
+            if (username == null)
             {
                 return RedirectToPage("/Index");
             }
 
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByNameAsync(username);
             if (user == null)
             {
-                return NotFound($"Unable to load user with email '{email}'.");
+                return NotFound($"Unable to load user with username '{username}'.");
             }
 
-            Email = email;
+            Username = username;
 
             return Page();
         }

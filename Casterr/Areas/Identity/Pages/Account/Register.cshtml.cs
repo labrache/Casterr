@@ -51,9 +51,16 @@ namespace Casterr.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
+            [Display(Name = "Username")]
+            public string Username { get; set; }
+
+            [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
+
+            [Display(Name = "Email subscription")]
+            public Boolean subscription { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -79,7 +86,7 @@ namespace Casterr.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new AppUser { UserName = Input.Email, Email = Input.Email };
+                var user = new AppUser { UserName = Input.Username, Email = Input.Email, mailSubscribe = Input.subscription };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -100,7 +107,7 @@ namespace Casterr.Areas.Identity.Pages.Account
                     */
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { username = Input.Username, returnUrl = returnUrl });
                     }
                     else
                     {

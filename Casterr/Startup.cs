@@ -8,6 +8,7 @@ using Casterr.Data;
 using Casterr.Data.classes;
 using Casterr.Hubs;
 using Casterr.services;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -118,36 +119,11 @@ namespace Casterr
             using (IServiceScope serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                if (context.Database.EnsureCreated())
-                {
-                   createDefaultBaseData(serviceScope).Wait();
-                }
                 context.Database.Migrate();
+                var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+                var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                ApplicationDataInitialiser.SeedData(userManager, roleManager);
             }
-        }
-
-        private async Task createDefaultBaseData(IServiceScope serviceScope)
-        {
-            var userManager = serviceScope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-            var roleManager = serviceScope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-
-            IdentityRole adminRole = new IdentityRole()
-            {
-                Id = new Guid().ToString(),
-                Name = "Admin"
-            };
-            IdentityResult roleResult = await roleManager.CreateAsync(adminRole);
-
-            AppUser user = new AppUser
-            {
-                UserName = "admin",
-                Email = "root@localhost",
-                EmailConfirmed = true
-            };
-            IdentityResult userResult = await userManager.CreateAsync(user, "casterr");
-
-            if (userResult.Succeeded && roleResult.Succeeded)
-                userManager.AddToRoleAsync(user, adminRole.Name).Wait();
         }
     }
 }

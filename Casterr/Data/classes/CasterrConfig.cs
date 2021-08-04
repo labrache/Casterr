@@ -21,9 +21,6 @@ namespace Casterr.Data.classes
         {
             _configFile = Path.Combine(env.ContentRootPath, "config", configuration["configFile"]);
             
-            _mailTemplateFolder = Path.Combine(env.ContentRootPath, "Data", "mail");
-            _mailTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_emailLayout.html"));
-            _mailFooterUnsubscribeTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_footerUnsubscribe.html"));
             if (File.Exists(_configFile))
                 config = JsonSerializer.Deserialize<CasterrConfig_Struct>(File.ReadAllText(_configFile));
             else
@@ -31,6 +28,10 @@ namespace Casterr.Data.classes
                 config = new CasterrConfig_Struct();
                 save();
             }
+
+            _mailTemplateFolder = Path.Combine(env.ContentRootPath, "Data", "mail");
+            _mailTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_emailLayout.html"));
+            _mailFooterUnsubscribeTemplate = File.ReadAllText(Path.Combine(_mailTemplateFolder, "_footerUnsubscribe.html"));
         }
 
         public EmailSenderOptions emailOptions()

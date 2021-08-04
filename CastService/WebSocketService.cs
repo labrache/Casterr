@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CasterrLib.classes;
+using CastService.Classes;
 using LibVLCSharp.Shared;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.Extensions.Configuration;
@@ -20,12 +21,16 @@ namespace CastService
 
         private readonly CastService castService;
         private String site;
+        private appAuth auth;
         public WebSocketService(ILogger<WebSocketService> logger, IConfiguration config)
         {
             _logger = logger;
             site = config["settings:url"];
-            connection = new HubConnectionBuilder().WithUrl(site + "cast")
-                .WithAutomaticReconnect().Build();
+            auth = new appAuth(site, config["settings:username"], config["settings:password"]);
+            connection = new HubConnectionBuilder().WithUrl(site + "cast", options =>
+            {
+                options.Cookies = auth.container;
+            }).WithAutomaticReconnect().Build();
             connection.Closed += async (error) =>
             {
                 _logger.LogWarning("Connection Closed: {0}", error.Message);
@@ -40,22 +45,30 @@ namespace CastService
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await castService.StartAsync(stoppingToken);
-            connection.On<string>("Connected", (cid) => connection.InvokeAsync("updateRenderersToClient", castService.getCast(), cid));
-            connection.On<string,string,string>("StartPlayingUrl", (player,storage,file) =>castService.StartPlaying(player, getResUrl(storage, file)));
-            connection.On<string,int>("SetVolume", (player,vol) =>castService.ControlVolume(player, vol));
-            connection.On<string,int>("SetPosition", (player,pos) =>castService.ControlPosition(player, pos));
-            connection.On<string,int>("ControlPlayback", (player,code) =>castService.ControlPlayback(player, code));
-            connection.On<string,Boolean,int>("setTrack", (player,isAudio,track) =>castService.setTrack(player, isAudio, track));
+            AuthenticateRes res = await auth.auth();
+            if (res.success)
+            {
+                connection.On<string>("Connected", (cid) => connection.InvokeAsync("updateRenderersToClient", castService.getCast(), cid));
+                connection.On<string, string, string>("StartPlayingUrl", (player, storage, file) => castService.StartPlaying(player, getResUrl(storage, file)));
+                connection.On<string, int>("SetVolume", (player, vol) => castService.ControlVolume(player, vol));
+                connection.On<string, int>("SetPosition", (player, pos) => castService.ControlPosition(player, pos));
+                connection.On<string, int>("ControlPlayback", (player, code) => castService.ControlPlayback(player, code));
+                connection.On<string, Boolean, int>("setTrack", (player, isAudio, track) => castService.setTrack(player, isAudio, track));
 
-            try
+                try
+                {
+                    await connection.StartAsync();
+                    _logger.LogInformation("Connection started");
+                    await castService.StartAsync(stoppingToken);
+                    _logger.LogInformation("CastService started");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                }
+            } else
             {
-                await connection.StartAsync();
-                _logger.LogInformation("Connection started");
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
+                _logger.LogError(res.Message);
             }
         }
 

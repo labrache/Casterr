@@ -41,9 +41,12 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            <a class="link-dark" data-bs-toggle="offcanvas" href="#offcanvasCast" role="button" aria-controls="offcanvasCast">
-                Cast panel
-            </a>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="link-dark" data-bs-toggle="offcanvas" href="#offcanvasCast" role="button" aria-controls="offcanvasCast">
+                    Cast panel
+                </a>
+            }
         </div>
     </footer>
 
@@ -51,6 +54,9 @@
     <script src="~/lib/mustache.js/mustache.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        var userAuthorized = @User.Identity.IsAuthenticated.ToString().ToLower();
+    </script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)

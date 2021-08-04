@@ -102,5 +102,7 @@ function setSub(elem) {
 }
 
 $(function () {
-    start();
+    if (userAuthorized) {
+        start();
+    }
 });
